@@ -2,9 +2,16 @@ import os
 import json
 from requests_oauthlib import OAuth1Session
 
-
 class Twitter():
 
+    GET_USERS_FRIENDS_IDS_URL = 'https://api.twitter.com/1.1/friends/ids.json'
+    GET_USERS_FOLLOWERS_IDS_URL = 'https://api.twitter.com/1.1/followers/ids.json'
+    GET_USERS_FRIENDS_LIST_URL = 'https://api.twitter.com/1.1/friends/list.json'
+    GET_USERS_FOLLOWERS_LIST_URL = 'https://api.twitter.com/1.1/followers/list.json'
+    GET_USERS_FAVORITES_URL = 'https://api.twitter.com/1.1/favorites/list.json'
+    GET_USERS_LISTS_URL = 'https://api.twitter.com/1.1/lists/list.json'
+    GET_USERS_TWEETS_URL = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
+    
     def __init__(self):
 
         self.API_KEY = os.getenv('API_KEY')
@@ -16,6 +23,10 @@ class Twitter():
             self.API_SECRET_KEY,
             self.ACCESS_TOKEN,
             self.ACCESS_TOKEN_SECRET)
+        
+    def create_user(self, user_id):
+        
+        return User(self.session, user_id)
 
     def check_response(self, response):
 
@@ -51,58 +62,52 @@ class Twitter():
 
         return objects
 
-    def get_friends_ids(self, user_id, stringify_ids=True, max_count=None, **kwargs):
 
-        url = 'https://api.twitter.com/1.1/friends/ids.json'
-        params = {'user_id': user_id, 'stringify_ids': stringify_ids, **kwargs}
-        friends_ids = self.get_objects(url, params, key='ids', max_count=max_count)
+class User(Twitter): 
+    
+    def __init__(self, session, user_id):
 
-        return friends_ids
+        self.session = session
+        self.user_id = user_id
+    
+    def get_friends_ids(self, stringify_ids=True, max_count=None, **kwargs):
 
-    def get_followers_ids(self, user_id, stringify_ids=True, max_count=None, **kwargs):
+        url = self.GET_USERS_FRIENDS_IDS_URL
+        params = {'user_id': self.user_id, 'stringify_ids': stringify_ids, **kwargs}
+        self.friends_ids = self.get_objects(url, params, key='ids', max_count=max_count)
 
-        url = 'https://api.twitter.com/1.1/followers/ids.json'
-        params = {'user_id': user_id, 'stringify_ids': stringify_ids, **kwargs}
-        followers_ids = self.get_objects(url, params, key='ids', max_count=max_count)
+    def get_followers_ids(self, stringify_ids=True, max_count=None, **kwargs):
 
-        return followers_ids
+        url = self.GET_USERS_FOLLOWERS_IDS_URL
+        params = {'user_id': self.user_id, 'stringify_ids': stringify_ids, **kwargs}
+        self.followers_ids = self.get_objects(url, params, key='ids', max_count=max_count)
 
-    def get_friends_list(self, user_id, max_count=None, **kwargs):
+    def get_friends_list(self, max_count=None, **kwargs):
 
-        url = 'https://api.twitter.com/1.1/friends/list.json'
-        params = {'user_id': user_id, **kwargs}
-        friends_list = self.get_objects(url, params, key='users', max_count=max_count)
+        url = self.GET_USERS_FRIENDS_LIST_URL
+        params = {'user_id': self.user_id, **kwargs}
+        self.friends_list = self.get_objects(url, params, key='users', max_count=max_count)
 
-        return friends_list
+    def get_followers_list(self, max_count=None, **kwargs):
 
-    def get_followers_list(self, user_id, max_count=None, **kwargs):
+        url = self.GET_USERS_FOLLOWERS_LIST_URL
+        params = {'user_id': self.user_id, **kwargs}
+        self.followers_list = self.get_objects(url, params, key='users', max_count=max_count)
 
-        url = 'https://api.twitter.com/1.1/followers/list.json'
-        params = {'user_id': user_id, **kwargs}
-        followers_list = self.get_objects(url, params, key='users', max_count=max_count)
+    def get_favorites(self, **kwargs):
 
-        return followers_list
+        url = self.GET_USERS_FAVORITES_URL
+        params = {'user_id': self.user_id, **kwargs}
+        self.favorites = self.get_result(url, params)
 
-    def get_favorites(self, user_id, **kwargs):
+    def get_lists(self, **kwargs):
 
-        url = 'https://api.twitter.com/1.1/favorites/list.json'
-        params = {'user_id': user_id, **kwargs}
-        favorites = self.get_result(url, params)
+        url = self.GET_USERS_LISTS_URL
+        params = {'user_id': self.user_id, **kwargs}
+        self.lists = self.get_result(url, params)
 
-        return favorites
+    def get_tweets(self, **kwargs):
 
-    def get_lists(self, user_id, **kwargs):
-
-        url = 'https://api.twitter.com/1.1/lists/list.json'
-        params = {'user_id': user_id, **kwargs}
-        lists = self.get_result(url, params)
-
-        return lists
-
-    def get_tweets(self, user_id, **kwargs):
-
-        url = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
-        params = {'user_id': user_id, **kwargs}
-        tweets = self.get_result(url, params)
-
-        return tweets
+        url = self.GET_USERS_TWEETS_URL
+        params = {'user_id': self.user_id, **kwargs}
+        self.tweets = self.get_result(url, params)
