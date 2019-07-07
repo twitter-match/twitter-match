@@ -68,6 +68,9 @@ class User(Twitter):
 
     def __init__(self, session, user_id):
 
+        if not isinstance(user_id, str):
+            raise ValueError('User id must be a string.')
+            
         self.session = session
         self.user_id = user_id
 
