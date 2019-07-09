@@ -2,16 +2,9 @@ import os
 import json
 from requests_oauthlib import OAuth1Session
 
+from api import api
 
 class Twitter():
-
-    GET_USERS_FRIENDS_IDS_URL = 'https://api.twitter.com/1.1/friends/ids.json'
-    GET_USERS_FOLLOWERS_IDS_URL = 'https://api.twitter.com/1.1/followers/ids.json'
-    GET_USERS_FRIENDS_LIST_URL = 'https://api.twitter.com/1.1/friends/list.json'
-    GET_USERS_FOLLOWERS_LIST_URL = 'https://api.twitter.com/1.1/followers/list.json'
-    GET_USERS_FAVORITES_URL = 'https://api.twitter.com/1.1/favorites/list.json'
-    GET_USERS_LISTS_URL = 'https://api.twitter.com/1.1/lists/list.json'
-    GET_USERS_TWEETS_URL = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
 
     def __init__(self):
 
@@ -29,32 +22,19 @@ class Twitter():
 
         return User(self.session, user_id)
 
-    def check_response(self, response):
-
-        if response.status_code != 200:
-            raise ConnectionError('Failed: {}'.format(response.status_code))
-
-    def get_result(self, url, params):
-
-        response = self.session.get(url, params=params)
-        self.check_response(response)
-        result = json.loads(response.text)
-
-        return result
-
-    def generate_results(self, url, params):
+    def generate_results(self, api_instance, **params):
 
         cursor = -1
         while cursor != 0:
-            result = self.get_result(
-                url, params={**params, 'cursor': cursor})
+            result = api_instance(
+                self.session, **{**params, **{'cursor':cursor}})
             yield result
             cursor = result['next_cursor']
 
-    def get_objects(self, url, params, key, max_count, **kwargs):
+    def get_objects(self, api_instance, key, max_count, **params):
 
         objects = []
-        for result in self.generate_results(url, params):
+        for result in self.generate_results(api_instance, **params):
             objects += result[key]
             if max_count is not None:
                 if len(objects) > max_count:
@@ -74,50 +54,41 @@ class User(Twitter):
         self.session = session
         self.user_id = user_id
 
-    def get_friends_ids(self, stringify_ids=True, max_count=None, **kwargs):
-
-        url = self.GET_USERS_FRIENDS_IDS_URL
-        params = {'user_id': self.user_id,
-                  'stringify_ids': stringify_ids, **kwargs}
+    def get_friends_ids(self, max_count=None, **params):
+        
         self.friends_ids = self.get_objects(
-            url, params, key='ids', max_count=max_count)
+            api.GetFriendsIds(), key='ids', max_count=max_count, 
+            user_id=self.user_id, **params)
 
-    def get_followers_ids(self, stringify_ids=True, max_count=None, **kwargs):
+    def get_followers_ids(self, max_count=None, **params):
 
-        url = self.GET_USERS_FOLLOWERS_IDS_URL
-        params = {'user_id': self.user_id,
-                  'stringify_ids': stringify_ids, **kwargs}
         self.followers_ids = self.get_objects(
-            url, params, key='ids', max_count=max_count)
+            api.GetFollowersIds(), key='ids', max_count=max_count,
+            user_id=self.user_id, **params)
 
-    def get_friends_list(self, max_count=None, **kwargs):
-
-        url = self.GET_USERS_FRIENDS_LIST_URL
-        params = {'user_id': self.user_id, **kwargs}
+    def get_friends_list(self, max_count=None, **params):
+        
         self.friends_list = self.get_objects(
-            url, params, key='users', max_count=max_count)
+            api.GetFriendsList(), key='users', max_count=max_count,
+            user_id=self.user_id, **params)
 
-    def get_followers_list(self, max_count=None, **kwargs):
-
-        url = self.GET_USERS_FOLLOWERS_LIST_URL
-        params = {'user_id': self.user_id, **kwargs}
+    def get_followers_list(self, max_count=None, **params):
+        
         self.followers_list = self.get_objects(
-            url, params, key='users', max_count=max_count)
+            api.GetFollowersList(), key='users', max_count=max_count,
+            user_id=self.user_id, **params)
 
-    def get_favorites(self, **kwargs):
+    def get_favorites(self, **params):
 
-        url = self.GET_USERS_FAVORITES_URL
-        params = {'user_id': self.user_id, **kwargs}
-        self.favorites = self.get_result(url, params)
+        self.favorites = api.GetFavorites()(
+            self.session, user_id=self.user_id, **params)
 
-    def get_lists(self, **kwargs):
+    def get_lists(self, **params):
 
-        url = self.GET_USERS_LISTS_URL
-        params = {'user_id': self.user_id, **kwargs}
-        self.lists = self.get_result(url, params)
+        self.lists = api.GetLists()(
+            self.session, user_id=self.user_id, **params)
 
-    def get_tweets(self, **kwargs):
+    def get_tweets(self, **params):
 
-        url = self.GET_USERS_TWEETS_URL
-        params = {'user_id': self.user_id, **kwargs}
-        self.tweets = self.get_result(url, params)
+        self.tweets = api.GetTweets()(
+            self.session, user_id=self.user_id, **params)

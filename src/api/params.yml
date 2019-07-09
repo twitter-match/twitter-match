@@ -1,0 +1,59 @@
+GET_FRIENDS_IDS:
+    URL: https://api.twitter.com/1.1/friends/ids.json
+    RESPONSE_FORMATS: JSON
+    REQUIRES_AUTHENTICATION: Yes
+    RATE_LIMITED: Yes
+    PARAMETERS:
+        user_id:
+            description: The ID of the user for whom to return results for.
+        screen_name:
+            description: The screen name of the user for whom to return results for.
+        cursor:
+            description: | 
+                Causes the list of connections to be broken into pages of no 
+                more than 5000 IDs at a time. The number of IDs returned is not guaranteed to be
+                5000 as suspended users are filtered out after connections are queried. If no 
+                cursor is provided, a value of -1 will be assumed, which is the first "page."
+                The response from the API will include a previous_cursor and next_cursor to allow 
+                paging back and forth. See Using cursors to navigate collections for more 
+                information.
+        stringify_ids:
+            description: |
+                Many programming environments will not consume our Tweet ids due 
+                to their size. Provide this option to have ids returned as strings instead. More
+                about Twitter IDs.
+        count:
+            description: |
+                Specifies the number of IDs attempt retrieval of, up to a maximum
+                of 5,000 per distinct request. The value of count is best thought of as a limit to
+                the number of results to return. When using the count parameter with this method, it
+                is wise to use a consistent count value across all requests to the same user's 
+                collection. Usage of this parameter is encouraged in environments where all 5,000
+                IDs constitutes too large of a response.
+GET_FAVORITES:
+   URL: https://api.twitter.com/1.1/favorites/list.json
+   RESPONSE_FORMATS: JSON
+   REQUIRES_AUTHENTIFICATION: Yes
+   RATE_LIMITED: Yes
+   USER_REQUESTS_WINDOW: 15
+   APP_REQUESTS_WINDOW: 15
+   PARAMETERS:
+       user_id:
+           description: The ID of the user for whom to return results for.
+       screen_name:
+           description: The screen name of the user for whom to return results for.
+       count:
+           description: |
+               Specifies the number of records to retrieve. Must be less than or equal to 200; 
+               defaults to 20. The value of count is best thought of as a limit to the number 
+               of tweets to return because suspended or deleted content is removed after the count has been applied.
+       since_id:
+           description: |
+               Returns results with an ID greater than (that is, more recent than) the specified ID. 
+               There are limits to the number of Tweets which can be accessed through the API. 
+               If the limit of Tweets has occured since the since_id, 
+               the since_id will be forced to the oldest ID available.
+       max_id:
+           description: Returns results with an ID less than (that is, older than) or equal to the specified ID.
+       include_entities:
+           description: The entities node will be omitted when set to false.
