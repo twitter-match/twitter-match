@@ -1,37 +1,31 @@
-import os
-import yaml
 import json
 import requests
-
-
-yaml_path = os.path.join(
-    os.path.dirname(__file__), 'params.yml')
-with open(yaml_path, 'r') as f:
-    CONFIG = yaml.load(f, Loader=yaml.FullLoader)
-
+import textwrap
 
 class APIBase():
     
-    def __init__(self, api_name):
+    def __init__(self, API_CONSTS):
         
-        self.CONFIG = CONFIG[api_name]
+        self.API_CONSTS = API_CONSTS
+        self.__call__.__func__.__doc__ = self.make_docstr()
         
     def make_docstr(self):
-        
-        doc = 'Args:\n'
-        for k, v in self.CONFIG['PARAMETERS'].items():
-            dscs = v['description'].split('\n')
-            doc += '    {}: '.format(k)
+
+        docstr = '\nArgs:\n'
+        for k, v in self.API_CONSTS['PARAMETERS'].items():
+            dscs = textwrap.wrap(
+                '{}: {}'.format(k, v['description']), width=70)
             for idx, dsc in enumerate(dscs):
-                dsc = dsc.strip() + '\n'
-                doc += dsc if idx == 0 else '        {}'.format(dsc)
-        self.__call__.__func__.__doc__ = doc
+                spaces = ' '*4 if idx == 0 else ' '*8
+                docstr += '{}{}\n'.format(spaces, dsc)
+                
+        return docstr
     
     def check_params(self, **params):
         
         for param in params:
-            if param not in self.CONFIG['PARAMETERS']:
-                raise ValueError('Invalid parameter.')
+            if param not in self.API_CONSTS['PARAMETERS']:
+                raise ValueError('Invalid parameter: {}'.format(param))
     
     def check_response(self, response):
 
@@ -39,31 +33,83 @@ class APIBase():
             raise ConnectionError('Failed: {}'.format(response.status_code))        
     
 
-class GetBase(APIBase):
+class GetAPIBase(APIBase):
     
-    def __init__(self, api_name):
+    def __init__(self, API_CONSTS):
         
-        super().__init__(api_name)
-        self.make_docstr()
+        super().__init__(API_CONSTS)
 
     def __call__(self, session, **params):
         
         self.check_params(**params)
-        response = session.get(self.CONFIG['URL'], params=dict(**params))
+        response = session.get(self.API_CONSTS['URL'], params=dict(**params))
         self.check_response(response)
         result = json.loads(response.text)
         
         return result
 
 
-class GetFriendsIds(GetBase):
+class PostAPIBase(APIBase):
     
-    def __init__(self):
+    def __init__(self, API_CONSTS):
         
-        super().__init__('GET_FRIENDS_IDS')
+        super().__init__(API_CONSTS)
+    
+    def __call__(self, session, **params):
+        
+        self.check_params(**params)
+        response = session.post(self.API_CONSTS['URL'], params=dict(**params))
+        self.check_response(response)
 
-class GetFavorites(GetBase):
-    
-    def __init__(self):
+
+# The following classes are only defined so that
+# distinct docstrings can be assigned to each api function.
+
+
+class GetFriendsIds(GetAPIBase):
+          
+    def __call__(self, session, **params):
         
-        super().__init__('GET_FAVORITES')
+        return super().__call__(session, **params)
+        
+
+class GetFollowersIds(GetAPIBase):
+
+    def __call__(self, session, **params):
+        
+        return super().__call__(session, **params)
+
+
+class GetFriendsList(GetAPIBase):
+    
+    def __call__(self, session, **params):
+        
+        return super().__call__(session, **params)
+        
+
+class GetFollowersList(GetAPIBase):
+    
+    def __call__(self, session, **params):
+
+        return super().__call__(session, **params)
+
+
+class GetFavorites(GetAPIBase):
+
+    def __call__(self, session, **params):
+
+        return super().__call__(session, **params)
+        
+        
+class GetLists(GetAPIBase):
+
+    def __call__(self, session, **params):
+
+        return super().__call__(session, **params)
+
+        
+class GetUserTimeline(GetAPIBase):
+            
+    def __call__(self, session, **params):
+        
+        return super().__call__(session, **params)
