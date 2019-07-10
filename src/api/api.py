@@ -12,7 +12,7 @@ class APIBase():
 
     def make_docstr(self):
 
-        docstr = '\nArgs:\n'
+        docstr = '\nArgs:\n    session: An OAuth1 session.\n'
         for k, v in self.API_CONSTS['PARAMETERS'].items():
             dscs = textwrap.wrap(
                 '{}: {}'.format(k, v['description']), width=70)
