@@ -4,6 +4,7 @@ from requests_oauthlib import OAuth1Session
 
 import api
 
+
 class Twitter():
 
     def __init__(self):
@@ -27,7 +28,7 @@ class Twitter():
         cursor = -1
         while cursor != 0:
             result = api_func(
-                self.session, **{**params, **{'cursor':cursor}})
+                self.session, **{**params, **{'cursor': cursor}})
             yield result
             cursor = result['next_cursor']
 
@@ -50,14 +51,14 @@ class User(Twitter):
 
         if not isinstance(user_id, str):
             raise ValueError('User id must be a string.')
-            
+
         self.session = session
         self.user_id = user_id
 
     def get_friends_ids(self, max_count=None, **params):
-        
+
         self.friends_ids = self.get_objects(
-            api.get_friends_ids, key='ids', max_count=max_count, 
+            api.get_friends_ids, key='ids', max_count=max_count,
             user_id=self.user_id, **params)
 
     def get_followers_ids(self, max_count=None, **params):
@@ -67,13 +68,13 @@ class User(Twitter):
             user_id=self.user_id, **params)
 
     def get_friends_list(self, max_count=None, **params):
-        
+
         self.friends_list = self.get_objects(
             api.get_friends_list, key='users', max_count=max_count,
             user_id=self.user_id, **params)
 
     def get_followers_list(self, max_count=None, **params):
-        
+
         self.followers_list = self.get_objects(
             api.get_followers_list, key='users', max_count=max_count,
             user_id=self.user_id, **params)
