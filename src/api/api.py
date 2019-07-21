@@ -8,7 +8,7 @@ class APIBase():
     def __init__(self, API_CONSTS):
 
         self.API_CONSTS = API_CONSTS
-        self.__call__.__func__.__doc__ = self.make_docstr()
+        self.make_docstr()
 
     def make_docstr(self):
 
@@ -19,8 +19,7 @@ class APIBase():
             for idx, dsc in enumerate(dscs):
                 spaces = ' '*4 if idx == 0 else ' '*8
                 docstr += '{}{}\n'.format(spaces, dsc)
-
-        return docstr
+        self.__call__.__func__.__doc__ = docstr
 
     def check_params(self, **params):
 
