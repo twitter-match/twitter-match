@@ -1,0 +1,142 @@
+GET_FRIENDS_IDS:
+    URL: https://api.twitter.com/1.1/friends/ids.json
+    RESPONSE_FORMATS: JSON
+    REQUIRES_AUTHENTICATION: Yes
+    RATE_LIMITED: Yes
+    USER_REQUESTS_WINDOW: 15
+    APP_REQUESTS_WINDOW: 15    
+    PARAMETERS:
+        user_id:
+            description: The ID of the user for whom to return results for.
+        screen_name:
+            description: The screen name of the user for whom to return results for.
+        cursor:
+            description: Causes the list of connections to be broken into pages of no more than 5000 IDs at a time. The number of IDs returned is not guaranteed to be 5000 as suspended users are filtered out after connections are queried. If no cursor is provided, a value of -1 will be assumed, which is the first "page." The response from the API will include a previous_cursor and next_cursor to allow paging back and forth. See Using cursors to navigate collections for more information.
+        stringify_ids:
+            description: Many programming environments will not consume our Tweet ids due to their size. Provide this option to have ids returned as strings instead. More about Twitter IDs.
+        count:
+            description: Specifies the number of IDs attempt retrieval of, up to a maximum of 5,000 per distinct request. The value of count is best thought of as a limit to the number of results to return. When using the count parameter with this method, it is wise to use a consistent count value across all requests to the same user's collection. Usage of this parameter is encouraged in environments where all 5,000 IDs constitutes too large of a response.
+
+GET_FOLLOWERS_IDS:
+    URL: https://api.twitter.com/1.1/followers/ids.json
+    RESPONSE_FORMATS: JSON
+    REQUIRES_AUTHENTIFICATION: Yes
+    RATE_LIMITED: Yes
+    USER_REQUESTS_WINDOW: 15
+    APP_REQUESTS_WINDOW: 15
+    PARAMETERS:
+        user_id:
+            description: The ID of the user for whom to return results for.
+        screen_name:
+            description: The screen name of the user for whom to return results for.
+        cursor:
+            description: Causes the list of connections to be broken into pages of no more than 5000 IDs at a time. The number of IDs returned is not guaranteed to be 5000 as suspended users are filtered out after connections are queried. If no cursor is provided, a value of -1 will be assumed, which is the first “page.”The response from the API will include a previous_cursor and next_cursor to allow paging back and forth. See Using cursors to navigate collections for more information.
+        stringify_ids: 
+            description: Many programming environments will not consume our Tweet ids due to their size. Provide this option to have ids returned as strings instead. More about Twitter IDs.
+        count:
+            description: Specifies the number of IDs attempt retrieval of, up to a maximum of 5,000 per distinct request. The value of count is best thought of as a limit to the number of results to return. When using the count parameter with this method, it is wise to use a consistent count value across all requests to the same user’s collection. Usage of this parameter is encouraged in environments where all 5,000 IDs constitutes too large of a response.
+
+GET_FRIENDS_LIST:
+    URL: https://api.twitter.com/1.1/friends/list.json
+    RESPONSE_FORMATS: JSON
+    REQUIRES_AUTHENTIFICATION: Yes
+    RATE_LIMITED: Yes
+    USER_REQUESTS_WINDOW: 15
+    APP_REQUESTS_WINDOW: 30
+    PARAMETERS:
+        user_id:
+            description: The ID of the user for whom to return results for.
+        screen_name:
+            description: The screen name of the user for whom to return results for.
+        cursor:
+            description: Causes the results to be broken into pages. If no cursor is provided, a value of -1 will be assumed, which is the first “page.”The response from the API will include a previous_cursor and next_cursor to allow paging back and forth. See Using cursors to navigate collections for more information.
+        count: 
+            description: The number of users to return per page, up to a maximum of 200. Defaults to 20.
+        skip_status: 
+            description: When set to either true, t or 1 statuses will not be included in the returned user objects.
+        include_user_entities:
+            description: The user object entities node will be disincluded when set to false.
+
+GET_FOLLOWERS_LIST:
+    URL: https://api.twitter.com/1.1/followers/list.json
+    RESPONSE_FORMATS: JSON
+    REQUIRES_AUTHENTIFICATION: Yes
+    RATE_LIMITED: Yes
+    USER_REQUESTS_WINDOW: 15
+    APP_REQUESTS_WINDOW: 30
+    PARAMETERS:
+        user_id:
+            description: The ID of the user for whom to return results for.
+        screen_name:
+            description: The screen name of the user for whom to return results for.
+        cursor:
+            description: Causes the results to be broken into pages. If no cursor is provided, a value of -1 will be assumed, which is the first “page.”The response from the API will include a previous_cursor and next_cursor to allow paging back and forth. See Using cursors to navigate collections for more information.
+        count:
+            description: The number of users to return per page, up to a maximum of 200. Defaults to 20.
+        skip_status:
+            description: When set to either true, t or 1, statuses will not be included in the returned user objects. If set to any other value, statuses will be included.
+        include_user_entities:
+            description: The user object entities node will not be included when set to false.
+
+GET_LISTS:
+    URL: https://api.twitter.com/1.1/lists/list.json
+    RESPONSE_FORMATS: JSON
+    REQUIRES_AUTHENTIFICATION: Yes
+    RATE_LIMITED: Yes
+    USER_REQUESTS_WINDOW: 15
+    APP_REQUESTS_WINDOW: 15
+    PARAMETERS:
+        user_id:
+            description: The ID of the user for whom to return results for. Helpful for disambiguating when a valid user ID is also a valid screen name. Note - Specifies the ID of the user to get lists from. Helpful for disambiguating when a valid user ID is also a valid screen name.
+        screen_name:
+            description: The screen name of the user for whom to return results for. Helpful for disambiguating when a valid screen name is also a user ID.
+        reverse:
+            description: Set this to true if you would like owned lists to be returned first. See description above for information on how this parameter works.
+
+GET_FAVORITES:
+    URL: https://api.twitter.com/1.1/favorites/list.json
+    RESPONSE_FORMATS: JSON
+    REQUIRES_AUTHENTIFICATION: Yes
+    RATE_LIMITED: Yes
+    USER_REQUESTS_WINDOW: 15
+    APP_REQUESTS_WINDOW: 15
+    PARAMETERS:
+        user_id:
+            description: The ID of the user for whom to return results for.
+        screen_name:
+            description: The screen name of the user for whom to return results for.
+        count:
+            description: Specifies the number of records to retrieve. Must be less than or equal to 200; defaults to 20. The value of count is best thought of as a limit to the number of tweets to return because suspended or deleted content is removed after the count has been applied.
+        since_id:
+            description: Returns results with an ID greater than (that is, more recent than) the specified ID. There are limits to the number of Tweets which can be accessed through the API. If the limit of Tweets has occured since the since_id, the since_id will be forced to the oldest ID available.
+        max_id:
+            description: Returns results with an ID less than (that is, older than) or equal to the specified ID.
+        include_entities:
+            description: The entities node will be omitted when set to false.
+
+GET_USER_TIMELINE:
+    URL: https://api.twitter.com/1.1/statuses/user_timeline.json
+    RESPONSE_FORMATS: JSON
+    REQUIRES_AUTHENTIFICATION: Yes
+    RATE_LIMITED: Yes
+    USER_REQUESTS_WINDOW: 180
+    APP_REQUESTS_WINDOW: 300
+    PARAMETERS:
+        user_id:
+            description: The ID of the user for whom to return results for.
+        screen_name:
+            description: The screen name of the user for whom to return results for.
+        since_id:
+            description: Returns results with an ID greater than (that is, more recent than) the specified ID. There are limits to the number of Tweets which can be accessed through the API. If the limit of Tweets has occured since the since_id, the since_id will be forced to the oldest ID available.
+        count:
+            description: Specifies the number of tweets to try and retrieve, up to a maximum of 200 per distinct request. The value of count is best thought of as a limit to the number of tweets to return because suspended or deleted content is removed after the count has been applied. We include retweets in the count, even if include_rts is not supplied. It is recommended you always send include_rts=1 when using this API method.
+        max_id:
+            description: Returns results with an ID less than (that is, older than) or equal to the specified ID.
+        trim_user:
+            description: When set to either true, t or 1, each tweet returned in a timeline will include a user object including only the status authors numerical ID. Omit this parameter to receive the complete user object.
+        exclude_replies:
+            description: This parameter will prevent replies from appearing in the returned timeline. Using exclude_replies with the count parameter will mean you will receive up-to count tweets — this is because the count parameter retrieves that many tweets before filtering out retweets and replies. This parameter is only supported for JSON and XML responses.
+        contributor_details:
+            description: This parameter enhances the contributors element of the status response to include the screen_name of the contributor. By default only the user_id of the contributor is included.
+        include_rts: 
+            description: When set to false, the timeline will strip any native retweets (though they will still count toward both the maximal length of the timeline and the slice selected by the count parameter). Note - If you’re using the trim_user parameter in conjunction with include_rts, the retweets will still contain a full user object.
