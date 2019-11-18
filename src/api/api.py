@@ -1,25 +1,12 @@
 import json
 import requests
-import textwrap
 
 
-class APIBase():
+class API:
 
     def __init__(self, API_CONSTS):
 
         self.API_CONSTS = API_CONSTS
-        self.make_docstr()
-
-    def make_docstr(self):
-
-        docstr = '\nArgs:\n    session: An OAuth1 session.\n'
-        for k, v in self.API_CONSTS['PARAMETERS'].items():
-            dscs = textwrap.wrap(
-                '{}: {}'.format(k, v['description']), width=70)
-            for idx, dsc in enumerate(dscs):
-                spaces = ' '*4 if idx == 0 else ' '*8
-                docstr += '{}{}\n'.format(spaces, dsc)
-        self.__call__.__func__.__doc__ = docstr
 
     def check_params(self, **params):
 
@@ -33,7 +20,7 @@ class APIBase():
             raise ConnectionError('Failed: {}'.format(response.status_code))
 
 
-class GetAPIBase(APIBase):
+class GetAPI(API):
 
     def __init__(self, API_CONSTS):
 
@@ -49,7 +36,7 @@ class GetAPIBase(APIBase):
         return result
 
 
-class PostAPIBase(APIBase):
+class PostAPI(API):
 
     def __init__(self, API_CONSTS):
 
@@ -60,56 +47,3 @@ class PostAPIBase(APIBase):
         self.check_params(**params)
         response = session.post(self.API_CONSTS['URL'], params=dict(**params))
         self.check_response(response)
-
-
-# The following classes are only defined so that
-# distinct docstrings can be assigned to each api function.
-
-
-class GetFriendsIds(GetAPIBase):
-
-    def __call__(self, session, **params):
-
-        return super().__call__(session, **params)
-
-
-class GetFollowersIds(GetAPIBase):
-
-    def __call__(self, session, **params):
-
-        return super().__call__(session, **params)
-
-
-class GetFriendsList(GetAPIBase):
-
-    def __call__(self, session, **params):
-
-        return super().__call__(session, **params)
-
-
-class GetFollowersList(GetAPIBase):
-
-    def __call__(self, session, **params):
-
-        return super().__call__(session, **params)
-
-
-class GetFavorites(GetAPIBase):
-
-    def __call__(self, session, **params):
-
-        return super().__call__(session, **params)
-
-
-class GetLists(GetAPIBase):
-
-    def __call__(self, session, **params):
-
-        return super().__call__(session, **params)
-
-
-class GetUserTimeline(GetAPIBase):
-
-    def __call__(self, session, **params):
-
-        return super().__call__(session, **params)
